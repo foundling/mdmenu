@@ -2,12 +2,16 @@
  * mdmenu builds an HTML menu from a markdown file. 
  */
 
-let fs = require('fs');
+const fs = require('fs');
+const Tree = require(__dirname + '/tree');
+const tags = ['#','##','###','####','#####','######'];
+const stateMachine = {
+    tag: '',
+    tagStartIndex: null,
+    tree: new Tree()
+};
 
-let tags = ['#','##','###','####','#####','######'];
-let depth = 0;
-
-let tagIsParsed = (state) => {
+const tagIsParsed = (state) => {
 
     let rv = false;
 
@@ -21,11 +25,10 @@ let tagIsParsed = (state) => {
     return rv;
 
 };
-let parseHeader = (line) => {
-    return line;
-};
 
-let updateState = (output, input, index, end) => {
+const parseHeader = (line) => line;
+
+const updateState = (output, input, index, end) => {
 
     // check for first hash
     if (output === '' && input === '#') {
@@ -34,18 +37,18 @@ let updateState = (output, input, index, end) => {
 
     // check if we're at the end of hashes
     if (input === '#') {
-        output.tag = output.tag + input 
+        output.tag = output.tag + input; 
         output.nextChar = end ? null : array[index + 1];
-        output.tagStartIndex === null;
+        output.tagStartIndex = null;
     }
 
 };
 
-let parseMdToTree = (output, input, index, array) => {
+const parseMdToTree = (output, input, index, array) => {
 
-    let isLastIndex = index === array.length - 1;
+    const isLastIndex = index === array.length - 1;
 
-    output = updateState(output, input, index, isLastIndex) 
+    output = updateState(output, input, index, isLastIndex); 
     if (tagIsParsed(output)) {
         output.tree.collect(parseHeader());   
     }
@@ -54,59 +57,6 @@ let parseMdToTree = (output, input, index, array) => {
 
 };
 
-let md = fs.readFileSync(__dirname + '/test.md', 'utf8').toString().split(''); 
 
-let Tree = function() {
-
-    let data = [];
-    let _tree = () => {  
-        root: []
-    };
-    let buildTree = () => _tree;
-
-    let findParent = (tag) => {};  
-    let addChild = (child) => {};
-    let createNode = () => {};
-    let collect = (datum) => data.push(datum);
-    let toDom = function() {
-        return JSON.stringify(_tree, undefined, 4);
-    };
-
-
-};
-
-let stateMachine = {
-    tag: '',
-    tagStartIndex: null,
-    tree: new Tree()
-};
-
-let domTree = md.split().reduce(md, parseMdToTree, stateMachine);
-
-
-/*
-## PARSING
-
-depth
-find_next_tag = while ++c !== 
-calculate_depth
-get_associated_title
-
-## REPRESENT
-
-tree
-root = []
-create_child -> { data: x , children: [y] }
-find_parent
-
-## BUILD DOM FRAGMENT
-
-
-# Title A
-## Subtitle A
-### Sub-subtitle A
-# Title B
-## Subtitle B
-#Title C
-
-*/
+const md = fs.readFileSync(__dirname + '/test.md', 'utf8').toString().split(''); 
+const domTree = md.reduce(parseMdToTree, stateMachine);
