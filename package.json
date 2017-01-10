@@ -1,0 +1,21 @@
+{
+  "name": "mdmenu",
+  "version": "0.0.1",
+  "description": "A Node.js Script to convert a Markdown File into an HTML Menu",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha/bin/mocha ./tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/foundling/mdmenu"
+  },
+  "keywords": [
+    "markdown",
+    "html",
+    "recursion",
+    "trees"
+  ],
+  "author": "Alex Ramsdell",
+  "license": "MIT"
+}
