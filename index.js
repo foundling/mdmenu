@@ -3,60 +3,52 @@
  */
 
 const fs = require('fs');
+const mdfile = fs.readFileSync('./test/document.md', 'utf8');
 const Tree = require(__dirname + '/tree');
-const tags = ['#','##','###','####','#####','######'];
-const stateMachine = {
-    tag: '',
-    tagStartIndex: null,
-    tree: new Tree()
-};
+const isLengthy = (x) => x.length;
+const headings = [
 
-const tagIsParsed = (state) => {
+    '######',
+    '#####',
+    '####',
+    '###',
+    '##',
+    '#'
+
+];
+
+const matchesLongest = (patterns) => (text) => {
 
     let rv = false;
-
-    if (
-        state.last === '#' && current === ' ' || 
-        state.current === '#' && state.next === null
-    ) {
-        rv = true;
-    }
-
+    for (let i = 0; i < patterns.length; ++i) {
+        if ( text.startsWith(patterns[i]) ) {
+            rv = true;
+            break;
+        }
+    } 
     return rv;
 
 };
 
-const parseHeader = (line) => line;
+const headingLines = mdfile
+    .split('\n')
+    .filter(isLengthy)
+    .map(line => line.trim())
+    .filter(matchesLongest(headings));
 
-const updateState = (output, input, index, end) => {
+const tagToTitle = (line) => {
 
-    // check for first hash
-    if (output === '' && input === '#') {
-        output.tagStartIndex = index;
-    }
+    const chars = line.split('');
+    const splitPoint = line.indexOf(' ');
+    const tag = chars.slice(0, splitPoint).join('');
+    const title = chars.slice(splitPoint + 1).join('');
 
-    // check if we're at the end of hashes
-    if (input === '#') {
-        output.tag = output.tag + input; 
-        output.nextChar = end ? null : array[index + 1];
-        output.tagStartIndex = null;
-    }
+    return { 
+        tag,
+        title
+    };
 
-};
+}
+const ds = headingLines.map(tagToTitle);
 
-const parseMdToTree = (output, input, index, array) => {
-
-    const isLastIndex = index === array.length - 1;
-
-    output = updateState(output, input, index, isLastIndex); 
-    if (tagIsParsed(output)) {
-        output.tree.collect(parseHeader());   
-    }
-
-    return isLastIndex ? output.tree.buildTree() : output;
-
-};
-
-
-const md = fs.readFileSync(__dirname + '/test.md', 'utf8').toString().split(''); 
-const domTree = md.reduce(parseMdToTree, stateMachine);
+console.log(ds);
