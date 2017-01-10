@@ -43,12 +43,12 @@ const tagToTitle = (line) => {
     const tag = chars.slice(0, splitPoint).join('');
     const title = chars.slice(splitPoint + 1).join('');
 
-    return { 
-        tag,
-        title
-    };
+    return { tag, title };
 
-}
-const ds = headingLines.map(tagToTitle);
+};
 
-console.log(ds);
+const data = headingLines.map(tagToTitle);
+const tree = new Tree(data);
+tree.buildTree();
+
+console.log(tree.toDom());
