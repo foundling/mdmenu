@@ -2,21 +2,6 @@
  * mdmenu builds an HTML menu from a markdown file. 
  */
 
-const fs = require('fs');
-const mdfile = fs.readFileSync('./test/document.md', 'utf8');
-const Tree = require(__dirname + '/tree');
-const isLengthy = (x) => x.length;
-const headings = [
-
-    '######',
-    '#####',
-    '####',
-    '###',
-    '##',
-    '#'
-
-];
-
 const matchesLongest = (patterns) => (text) => {
 
     let rv = false;
@@ -30,12 +15,6 @@ const matchesLongest = (patterns) => (text) => {
 
 };
 
-const headingLines = mdfile
-    .split('\n')
-    .filter(isLengthy)
-    .map(line => line.trim())
-    .filter(matchesLongest(headings));
-
 const tagToTitle = (line) => {
 
     const chars = line.split('');
@@ -46,9 +25,28 @@ const tagToTitle = (line) => {
     return { tag, title };
 
 };
+const isLengthy = (x) => x.length;
 
+const fs = require('fs');
+const mdfile = fs.readFileSync('./test/document.md', 'utf8');
+const Tree = require(__dirname + '/tree');
+
+const headings = [
+
+    '######',
+    '#####',
+    '####',
+    '###',
+    '##',
+    '#'
+
+];
+const headingLines = mdfile
+    .split('\n')
+    .filter(isLengthy)
+    .map(line => line.trim())
+    .filter(matchesLongest(headings));
 const data = headingLines.map(tagToTitle);
 const tree = new Tree(data);
 tree.buildTree();
-
 console.log(tree.toDom());
