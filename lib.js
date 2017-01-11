@@ -1,4 +1,3 @@
-
 /*
  * Predicates and Transformations
  */

@@ -27,11 +27,11 @@ const Tree = function(data) {
 
         _tree.root = [];
         let currentNode = _tree.root;
-        node.push(data);       
+        currentNode.push(data);       
 
         for (let cur = 1, prev = 0, max = data.length; cur < max; ++cur, ++prev) {
 
-            let diff = data[cur]['tag'].length - data[prev]['tag'].length;
+            let diff = data[cur].tag.length - data[prev].tag.length;
             let currentNode;
 
             if (diff > 0) {
