@@ -1,34 +1,30 @@
 const Tree = function(data) {
 
     const _tree = { root: null };
+    const _findParent = (node, distance) => {
 
-    const buildTree = () => {
+        while (distance > 0) {
+            node = node.parent;
+            --distance;
+        }
 
-        const _findParent = (node, distance) => {
+        return node;
 
-            while (distance > 0) {
-                node = node.parent;
-                --distance;
-            }
-
-            return node;
-
-        };  
-
-        const _createChild = (data, parent) => {
-            return {
-                data: data,
-                parent: parent,
-                children: []
-            };
+    };  
+    const _createChild = (data, parent) => {
+        return {
+            data: data,
+            parent: parent,
+            children: []
         };
+    };
+    const buildTree = () => {
 
         if (!data.length) return _tree;
 
         _tree.root = [];
-        let currentNode = _tree.root;
-        node.push(data);       
 
+        let currentNode = _tree.root;
         for (let cur = 1, prev = 0, max = data.length; cur < max; ++cur, ++prev) {
 
             let diff = data[cur]['tag'].length - data[prev]['tag'].length;
