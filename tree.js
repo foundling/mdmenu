@@ -1,6 +1,14 @@
 const Tree = function(data) {
 
-    const _tree = { children: [], data: null };
+    const _tree = _mkNode({ 
+
+        data: null, 
+        parent: null, 
+        children: [] 
+
+    });
+
+
     const _findParent = (node, distance) => {
 
         while (distance > 0) {
@@ -11,25 +19,53 @@ const Tree = function(data) {
         return node;
 
     };  
-    const _createChild = (data, parent) => {
+
+    const _mkNode = ({ data, parent, children }) => {
+
         return {
             data: data,
-            children: []
+            parent: parent,
+            children: children || []
         };
+
     };
+
     const buildTree = () => {
 
         if (!data.length) return _tree;
 
-        _tree.root.push(currentNode);
-        let currentNode = _createChild(data[0]);
+        let currentNode = _tree;
+        _tree.children.push(
+
+            _mkNode({ 
+                data: data[0], 
+                parent: currentNode;
+            })
+
+        );
 
         for (let cur = 1, prev = 0, max = data.length; cur < max; ++cur, ++prev) {
+
             const diff = data[ cur ].tag.length - data[ prev ].tag.length;
-            const currentNode = _createChild( data[cur] );
-            if (diff > 0) currentNode.children.push(newNode);
-            if (diff === 0) _findParent(currentNode, diff).children.push(newNode);
-            if (diff < 0) _findParent(currentNode, diff + 1).children.push(newNode);
+
+            // add child
+            if (diff > 0) {
+                let parentNode = currentNode;
+                let newNode = _mkNode({ data: data[cur], parent: currentNode });
+                parentNode.children.push(newNode);
+            }
+            // add sibling
+            if (diff === 0) {
+                let parentNode = _findParent(currentNode, diff);
+                let newNode = _mkNode({ data: data[cur], parent: parentNode });
+                parentNode.children.push(newNode);
+            }
+            // append to ancestor's children 
+            if (diff < 0) {
+                let parentNode = _findParent(currentNode, Math.abs(diff + 1));
+                let newNode = _mkNode({ data: data[cur], parent: parentNode });
+                parentNode.children.push(newNode);
+            }
         }
 
     };
