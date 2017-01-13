@@ -1,6 +1,6 @@
 const Tree = function(data) {
 
-    const _tree = _mkNode({ 
+    let _tree = _mkNode({ 
 
         data: null, 
         parent: null, 
@@ -9,7 +9,7 @@ const Tree = function(data) {
     });
 
 
-    const _findParent = (node, distance) => {
+    function _findAncestor(node, distance) {
 
         while (distance > 0) {
             node = node.parent;
@@ -18,31 +18,32 @@ const Tree = function(data) {
 
         return node;
 
-    };  
+    }  
 
-    const _mkNode = ({ data, parent, children }) => {
+    function _mkNode({ data, parent, children }) {
 
         return {
+
             data: data,
             parent: parent,
             children: children || []
+
         };
 
-    };
+    }
 
-    const buildTree = () => {
+    function buildTree() {
+
+        debugger;
 
         if (!data.length) return _tree;
 
-        let currentNode = _tree;
-        _tree.children.push(
+        let currentNode = _mkNode({ 
+            data: data[0], 
+            parent: _tree
+        });
 
-            _mkNode({ 
-                data: data[0], 
-                parent: currentNode;
-            })
-
-        );
+        _tree.children.push(currentNode);
 
         for (let cur = 1, prev = 0, max = data.length; cur < max; ++cur, ++prev) {
 
@@ -56,21 +57,27 @@ const Tree = function(data) {
             }
             // add sibling
             if (diff === 0) {
-                let parentNode = _findParent(currentNode, diff);
+                let parentNode = _findAncestor(currentNode, diff);
                 let newNode = _mkNode({ data: data[cur], parent: parentNode });
                 parentNode.children.push(newNode);
             }
             // append to ancestor's children 
             if (diff < 0) {
-                let parentNode = _findParent(currentNode, Math.abs(diff + 1));
+                let parentNode = _findAncestor(currentNode, Math.abs(diff + 1));
                 let newNode = _mkNode({ data: data[cur], parent: parentNode });
                 parentNode.children.push(newNode);
             }
         }
 
-    };
+        return _tree;
 
-    const toDom = () => JSON.stringify(_tree, undefined, 4);
+    }
+
+    function toDom() {
+
+        return JSON.stringify(_tree, undefined, 4);
+
+    }
 
     return {
 

@@ -28,6 +28,4 @@ const headingLines = mdfile
     .filter(matchesLongest(headings));
 const data = headingLines.map(tagToTitle);
 const tree = new Tree(data);
-tree.buildTree();
-
-//console.log(tree.toDom());
+const result = tree.buildTree();
