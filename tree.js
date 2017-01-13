@@ -34,8 +34,6 @@ const Tree = function(data) {
 
     function buildTree() {
 
-        debugger;
-
         if (!data.length) return _tree;
 
         let currentNode = _mkNode({ 
@@ -68,8 +66,6 @@ const Tree = function(data) {
                 parentNode.children.push(newNode);
             }
         }
-
-        return _tree;
 
     }
 

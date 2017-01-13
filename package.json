@@ -4,7 +4,7 @@
   "description": "A Node.js Script to convert a Markdown File into an HTML Menu",
   "main": "index.js",
   "scripts": {
-    "test": "mocha/bin/mocha ./tests"
+    "test": "tap-prettify test/*"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,13 @@
     "mocha": "^3.2.0",
     "tap-prettify": "0.0.2",
     "tape": "^4.6.3"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^3.5.0",
+    "tape": "^4.6.3",
+    "tap-prettify": "^0.0.2"
   }
 }
