@@ -53,4 +53,3 @@ const buildDomString = function({ tag, title, isLeaf }) {
 
 tree.buildTree();
 tree.processData(buildDomString);
-console.log(stringOutput);
