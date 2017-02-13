@@ -3,7 +3,8 @@
 // https://www.w3.org/wiki/HTML_lists#Nesting_lists
 
 const fs = require('fs');
-const mdfile = fs.readFileSync('./test/document.md', 'utf8');
+//const mdfile = fs.readFileSync('./test/document.md', 'utf8');
+const mdfile = fs.readFileSync('./test/document_simple2.md', 'utf8');
 
 const {
 
@@ -44,33 +45,18 @@ const buildChild = function(title, headingSize, levels) {
     const indent = ' '.repeat(depth + levels)
     depth = indent + depth;
 
-    return `
-    ${ indent.repeat(levels * 1) }<ul>
-    ${ indent.repeat(levels * 1) }<li>
-    ${ indent.repeat(levels * 2) }<h${ headingSize }> ${ title } </h${ headingSize }>`;
+    return `<ul>
+<li>
+<h${ headingSize }> ${ title } </h${ headingSize }>`;
+
 }
 
 const buildSibling = function(title, headingSize, levels) {
     // close previous list and add a new open list with title in it.
 
-    return `
-    </li>
-    <li>
-        <h${ headingSize }>title</h${ headingSize }>`;
-
-};
-
-const buildAncestor = function(title, headingSize, levels) {
-
-    const output = [];
-    const ancestor = `
-    <li>
-        <h${ headingSize }>${ title }</h${ headingSize }>`;
-
-    output.push(closeMenu(levels));
-    output.push(ancestor);
-
-    return output.join('\n');
+    return `</li>
+<li>
+<h${ headingSize }>${ title }</h${ headingSize }>`;
 
 };
 
@@ -80,9 +66,9 @@ const closeMenu = function(levels) {
 
     while (levels > 0) {
         
-        let tpl = `\
-    </li>
-</ul>`;
+        let tpl = `</li>
+</ul>
+`;
         closingOutput.push(tpl);
         --levels;    
 
@@ -91,6 +77,23 @@ const closeMenu = function(levels) {
     return closingOutput.join('\n');
 
 };
+
+const buildAncestor = function(title, headingSize, levels) {
+
+    const output = [];
+    const ancestor = `<li>
+<h${ headingSize }>${ title }</h${ headingSize }>`;
+
+    output.push(closeMenu(Math.abs(levels)));
+    output.push(`
+</li>`);
+    output.push(ancestor);
+
+    return output.join('\n');
+
+};
+
+
 
 let output = '';
 let previousDirection; 
@@ -124,8 +127,9 @@ const buildDomString = function({ tag, title, direction }) {
 }; 
 
 
+
 tree.buildTree();
 tree.processData(buildDomString);
+output += closeMenu(Math.abs(previousDirection));
 
 console.log(output);
-console.log(previousDirection);
