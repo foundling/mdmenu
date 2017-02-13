@@ -4,7 +4,10 @@
 
 const fs = require('fs');
 //const mdfile = fs.readFileSync('./test/document.md', 'utf8');
-const mdfile = fs.readFileSync('./test/document_simple2.md', 'utf8');
+const mdfile = fs.readFileSync('./test/real_doc.md', 'utf8');
+
+//const mdfile = fs.readFileSync('./test/document_simple2.md', 'utf8');
+//
 
 const {
 
