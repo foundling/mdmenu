@@ -1,7 +1,7 @@
 {
   "name": "mdmenu",
   "version": "0.0.1",
-  "description": "A Node.js Script to convert a Markdown File into an HTML Menu",
+  "description": "A Node.js Script to convert a Markdown File into an HTML5 Menu.",
   "main": "index.js",
   "scripts": {
     "test": "tap-prettify test/*"
