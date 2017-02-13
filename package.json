@@ -1,6 +1,6 @@
 {
   "name": "mdmenu",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Node.js Script to convert a Markdown File into an HTML5 Menu.",
   "main": "index.js",
   "scripts": {
