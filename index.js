@@ -5,10 +5,6 @@ const fs = require('fs');
 const mdfile = fs.readFileSync('./test/document.md', 'utf8');
 const Tree = require('./lib/tree');
 
-const templateSettings = { 
-    listType: process.argv[2] || 'ul'  
-};
-
 const {
 
     isLengthy,
@@ -24,7 +20,11 @@ const {
     buildAncestor,
     closeMenu
 
-} = require('./lib/templateFunctions').init(templateSettings);
+} = require('./lib/templateFunctions').init({
+
+    listType: process.argv[2] || 'ul'  
+
+});
 
 const headings = [
     '######',
