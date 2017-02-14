@@ -9,8 +9,8 @@ const {
 
 } = require('./lib/util');
 const fs = require('fs');
-const mdfile = fs.readFileSync('./test/document.md', 'utf8');
 //const mdfile = fs.readFileSync('./test/real_doc.md', 'utf8');
+const mdfile = fs.readFileSync('./test/document.md', 'utf8');
 //const mdfile = fs.readFileSync('./test/document_simple2.md', 'utf8');
 
 const Tree = require('./lib/tree');
@@ -35,6 +35,8 @@ const headingLines = mdfile
 const data = headingLines.map(tagToTitle);
 const tree = new Tree(data);
 
+let output = '';
+let tags = [];
 
 const buildChild = function(title, headingSize, distance) {
     return `<ul>
@@ -94,8 +96,7 @@ const closeMenu = function(distance) {
 
 
 
-let output = '';
-let previousDirection; 
+let lastTag; 
 
 const buildDomString = function({ tag, title, direction }) { 
 
@@ -121,7 +122,8 @@ const buildDomString = function({ tag, title, direction }) {
             
     }
 
-    previousDirection = direction;
+    tags.push(tag);
+    lastTag = tag;
 
 }; 
 
@@ -129,5 +131,14 @@ const buildDomString = function({ tag, title, direction }) {
 
 tree.buildTree();
 tree.processData(buildDomString);
-output += closeMenu(Math.abs(previousDirection) + 2);
+
+const shortestTagSeen = Math.min(...tags.map(tag => tag.length));
+const lastTagLength = lastTag.length;
+const closingDistance = lastTag.length - shortestTagSeen;
+
+//console.log('shortest seen: ', shortestTagSeen);
+//console.log('last tag length: ', lastTagLength);
+//console.log('closing distance: ', closingDistance);
+
+output += closeMenu(closingDistance + 1);
 console.log(output);
