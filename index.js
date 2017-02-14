@@ -7,9 +7,10 @@ const Tree = require('./lib/tree');
 
 const {
 
-    isLengthy,
     matchesLongest,
-    tagToTitle
+    tagToTitle,
+    isLengthy,
+    toTrimmed
 
 } = require('./lib/util');
 
@@ -38,7 +39,7 @@ const headings = [
 const headingLines = mdfile
     .split('\n')
     .filter(isLengthy)
-    .map(line => line.trim())
+    .map(toTrimmed)
     .filter(matchesLongest(headings));
 
 const data = headingLines.map(tagToTitle);
@@ -82,14 +83,8 @@ const domStringBuilder = function({ indentChar }) {
     };
 };
 
-const options = {
-
-    indentChar: '\t', 
-
-};
-
 tree.buildTree();
-tree.processData( domStringBuilder(options) );
+tree.processData( domStringBuilder({ indentChar: '\t' }) );
 
 const shortestTagSeen = Math.min(...tagsSeen.map(tag => tag.length));
 const lastTagLength = lastTag.length;
