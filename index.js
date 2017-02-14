@@ -1,13 +1,5 @@
 /* mdmenu builds an HTML menu from a markdown file. */
-
 // https://www.w3.org/wiki/HTML_lists#Nesting_lists
-
-const fs = require('fs');
-//const mdfile = fs.readFileSync('./test/document.md', 'utf8');
-const mdfile = fs.readFileSync('./test/real_doc.md', 'utf8');
-
-//const mdfile = fs.readFileSync('./test/document_simple2.md', 'utf8');
-//
 
 const {
 
@@ -16,9 +8,12 @@ const {
     tagToTitle
 
 } = require('./lib/util');
+const fs = require('fs');
+const mdfile = fs.readFileSync('./test/document.md', 'utf8');
+//const mdfile = fs.readFileSync('./test/real_doc.md', 'utf8');
+//const mdfile = fs.readFileSync('./test/document_simple2.md', 'utf8');
 
 const Tree = require('./lib/tree');
-
 const listTypes = ['ul', 'ol', 'dl'];
 const headings = [
 
@@ -40,40 +35,55 @@ const headingLines = mdfile
 const data = headingLines.map(tagToTitle);
 const tree = new Tree(data);
 
-let depth = 1; 
 
-const buildChild = function(title, headingSize, levels) {
-    // insert new list with an opening li containing a heading tag
-
-    const indent = ' '.repeat(depth + levels)
-    depth = indent + depth;
-
+const buildChild = function(title, headingSize, distance) {
     return `<ul>
 <li>
-<h${ headingSize }> ${ title } </h${ headingSize }>`;
+<h${ headingSize }> ${ title } </h${ headingSize }>
+
+`;
 
 }
 
-const buildSibling = function(title, headingSize, levels) {
+const buildSibling = function(title, headingSize, distance) {
     // close previous list and add a new open list with title in it.
 
     return `</li>
 <li>
-<h${ headingSize }>${ title }</h${ headingSize }>`;
+<h${ headingSize }>${ title }</h${ headingSize }>
+`;
 
 };
 
-const closeMenu = function(levels) {
+const buildAncestor = function(title, headingSize, distance) {
+
+    // new node is <li><h3>title</h3>
+ 
+    const output = [];
+
+    // closing: <distance> number of </li></ul> closings, plus another </li>
+    const closingMarkup = closeMenu(Math.abs(distance)) + `\n</li>\n`;
+    const ancestor = `<li>\n<h${ headingSize }>${ title }</h${ headingSize }>\n`;
+
+    output.push(closingMarkup);
+    output.push(ancestor);
+
+    return output.join('\n');
+
+};
+
+const closeMenu = function(distance) {
 
     const closingOutput = [];
 
-    while (levels > 0) {
+    while (distance > 0) {
         
-        let tpl = `</li>
+        let tpl = `
+    </li>
 </ul>
 `;
         closingOutput.push(tpl);
-        --levels;    
+        --distance;    
 
     }
 
@@ -81,20 +91,6 @@ const closeMenu = function(levels) {
 
 };
 
-const buildAncestor = function(title, headingSize, levels) {
-
-    const output = [];
-    const ancestor = `<li>
-<h${ headingSize }>${ title }</h${ headingSize }>`;
-
-    output.push(closeMenu(Math.abs(levels)));
-    output.push(`
-</li>`);
-    output.push(ancestor);
-
-    return output.join('\n');
-
-};
 
 
 
@@ -133,6 +129,5 @@ const buildDomString = function({ tag, title, direction }) {
 
 tree.buildTree();
 tree.processData(buildDomString);
-output += closeMenu(Math.abs(previousDirection));
-
+output += closeMenu(Math.abs(previousDirection) + 2);
 console.log(output);
