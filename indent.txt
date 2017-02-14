@@ -1,32 +1,59 @@
+// child
+// indent: 0
 <ul>
     <li>
         <h1> Level 1 </h1>
+
+        // child
+        // indent: +2
         <ul>
             <li>
                 <h2> Level 2 </h2>
+
+                // child
+                // indent: +2
                 <ul>
                     <li>
                         <h3> Level 3 </h3>
+
+                    // ancestor - close
+                    // indent: +2
                     </li>
                 </ul>
             </li>
+
+            // ancestor - add new node
+            // indent: -2 
             <li>
                 <h2>Level 2</h2>
+
+            // ancestor - close
+            // indent: +0
             </li>
         </ul>
     </li>
+    // ancestor - add new node
+    // indent: -2
     <li>
         <h1>Level 1</h1>
+
+        // child
+        // indent: +2 
         <ul>
             <li>
                 <h2> Level 2 </h2>
+
+                // child
+                // indent: +2 
                 <ul>
                     <li>
                         <h3> Level 3 </h3>
+
+                    // close menu
+                    // distance 3 - 1  + 1 = 3
+                    // indent: 0
                     </li>
                 </ul>
-
-// missing
             </li>
         </ul>
     </li>
