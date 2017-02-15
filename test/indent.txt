@@ -1,60 +1,60 @@
-// child
-// indent: 0
+CHILD 
 <ul>
     <li>
         <h1> Level 1 </h1>
+        (+2)
 
-        // child
-        // indent: +2
+        CHILD 
         <ul>
             <li>
                 <h2> Level 2 </h2>
+                (+2)
 
-                // child
-                // indent: +2
+                CHILD 
                 <ul>
                     <li>
                         <h3> Level 3 </h3>
+                        (+2)
 
-                    // ancestor - close
-                    // indent: +2
+                    ANCESTOR - CLOSE
                     </li>
                 </ul>
             </li>
+            (-2)
 
-            // ancestor - add new node
-            // indent: -2 
+            ANCESTOR - ADD NODE
             <li>
                 <h2>Level 2</h2>
+                (-0)
 
-            // ancestor - close
-            // indent: +0
+            ANCESTOR - CLOSE
             </li>
         </ul>
     </li>
-    // ancestor - add new node
-    // indent: -2
+    (-2)
+
+    ANCESTOR - ADD NODE
     <li>
         <h1>Level 1</h1>
+        (-0)
 
-        // child
-        // indent: +2 
+        CHILD
         <ul>
             <li>
                 <h2> Level 2 </h2>
+                (+2)
 
-                // child
-                // indent: +2 
+                CHILD
                 <ul>
                     <li>
                         <h3> Level 3 </h3>
+                        (+2)
 
-                    // close menu
-                    // distance 3 - 1  + 1 = 3
-                    // indent: 0
+                    CLOSE MENU
                     </li>
                 </ul>
             </li>
         </ul>
     </li>
 </ul>
+(-3)

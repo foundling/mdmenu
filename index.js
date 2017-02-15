@@ -1,4 +1,5 @@
 /* mdmenu builds an HTML menu from a markdown file. */
+
 // conforms to the HTML5 spec: https://www.w3.org/wiki/HTML_lists#Nesting_lists
 
 const fs = require('fs');
@@ -48,10 +49,10 @@ const tree = new Tree(data);
 const tagsSeen = [];
 let output = '';
 let lastTag; 
+let currentIndent = 0;
 
 const domStringBuilder = function({ indentChar }) {
 
-    let indent = 0;
 
     return function buildDomString({ tag, title, direction, options }) {
 
@@ -60,22 +61,26 @@ const domStringBuilder = function({ indentChar }) {
         // child
         if (direction > 0) {
 
-            output += buildChild(title, tagLength, direction);  
+            output += buildChild(title, tagLength, direction, currentIndent);  
+            ++currentIndent;
 
         }
 
         // sibling
         if (direction === 0) {
          
-            output += buildSibling(title, tagLength, direction);       
+            output += buildSibling(title, tagLength, direction, currentIndent);       
         }
 
         // ancestor
         if (direction < 0 ) {
 
-            output += buildAncestor(title, tagLength, direction);
+            output += buildAncestor(title, tagLength, direction, currentIndent);
+            currentIndent = currentIndent - direction;
                 
         }
+
+        output += indentChar.repeat(currentIndent); 
 
         tagsSeen.push(tag);
         lastTag = tag;
