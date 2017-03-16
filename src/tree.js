@@ -9,8 +9,7 @@ const Tree = function({ data }) {
 
     });
 
-    let state = null;
-
+    let output = null;
 
     function _findAncestor(node, distance) {
 
@@ -41,9 +40,11 @@ const Tree = function({ data }) {
         if (!data.length) return _tree;
 
         let currentNode = _mkNode({ 
+
             data: data[0], 
             direction: 1,
             parent: _tree
+
         });
 
         _tree.children.push(currentNode);
@@ -88,9 +89,9 @@ const Tree = function({ data }) {
             let { tag, title } = childNode.data;
             let direction = childNode.direction;
 
-            let callbackData = { tag, title, direction };
+            let callbackData = { tag, title, direction, done: i === max - 1 };
 
-            state = callback(callbackData);
+            output = callback(callbackData);
             _bfs(childNode, callback);
 
         } 
@@ -100,7 +101,7 @@ const Tree = function({ data }) {
     function processData(callback) {
 
         _bfs(_tree, callback);
-        return state;
+        return output;
 
     }
 

@@ -1,5 +1,4 @@
-
-const DomStringBuilder = function({ indentChar, tplFns }) {
+function DomStringBuilder({ indentChar, listType }) {
 
     const {
 
@@ -8,7 +7,7 @@ const DomStringBuilder = function({ indentChar, tplFns }) {
         buildAncestor,
         closeMenu
 
-    } = tplFns;
+    } = templateFunctions({ indentChar, listType });
 
     const state = {
 
@@ -19,7 +18,7 @@ const DomStringBuilder = function({ indentChar, tplFns }) {
 
     };
 
-    return function buildDomString({ tag, title, direction }) {
+    return function buildDomString({ tag, title, direction, done }) {
 
         const tagLength = tag.length;
 
@@ -45,9 +44,79 @@ const DomStringBuilder = function({ indentChar, tplFns }) {
         state.tagsSeen.push(tag);
         state.lastTag = tag;
 
-        return state;
+        if (done) {
+
+            const shortestTagSeen = Math.min(...state.tagsSeen.map(tag => tag.length));
+            const lastTagLength = state.lastTag.length;
+            const closingDistance = state.lastTag.length - shortestTagSeen;
+            state.output += closeMenu(closingDistance + 1);
+
+        }
+
+        return state.output;
 
     };
 };
+
+function templateFunctions({ indentChar, listType }) {
+
+    const _tplFns = {
+
+        buildChild: function(title, headingSize, distance, currentIndent) {
+            const indent = indentChar.repeat(currentIndent);
+
+            return `
+                ${indent}<${ listType }>
+                ${indent}    <li>
+                ${indent}        <h${ headingSize }> ${ title } </h${ headingSize }>`;
+
+        },
+
+        buildSibling: function (title, headingSize, distance, indent) {
+
+            return `
+                ${indent}</li>
+                ${indent}<li>
+                ${indent}   <h${ headingSize }>${ title }</h${ headingSize }>`;
+
+        },
+
+        buildAncestor: function(title, headingSize, distance, indent) {
+
+ 
+            const output = [];
+            const closingMarkup = _tplFns.closeMenu(Math.abs(distance)); + `\n</li>\n`;
+            const ancestor = `<li>\n<h${ headingSize }>${ title }</h${ headingSize }>\n`;
+            output.push(closingMarkup);
+            output.push(ancestor);
+            return output.join('\n');
+
+        },
+
+        closeMenu: function(distance){
+
+            const closingOutput = [];
+
+            while (distance > 0) {
+                
+                let tpl = `
+                </li>
+                    </${listType}>
+                                `;
+
+                closingOutput.push(tpl);
+                --distance;    
+
+            }
+
+            return closingOutput.join('\n');
+        },
+    };
+
+    return _tplFns;
+
+}
+
+
 
 module.exports = DomStringBuilder;

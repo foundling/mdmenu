@@ -13,33 +13,18 @@ const {
 
 } = require('./src/util');
 
-const options = {
-
-    indentChar: '\t',
-    listType: 'ul'
-
-};
-
-const tplFns = require('./src/tplFns').init({ 
-    listType: process.argv[2] || options.listType 
-});
 
 function main() {
 
     const headingLines = parseHeadings(mdContent);
     const tree = Tree({ data: headingLines.map(tagToTitle) });
-    const domStringBuilder = DomStringBuilder({ indentChar: options.indentChar, tplFns });
+    const buildDomString = DomStringBuilder({ indentChar:'\t', listType:'ul' });
 
     tree.buildTree();
 
-    let outputData = tree.processData(domStringBuilder);
-
-    const shortestTagSeen = Math.min(...outputData.tagsSeen.map(tag => tag.length));
-    const lastTagLength = outputData.lastTag.length;
-    const closingDistance = outputData.lastTag.length - shortestTagSeen;
-
-    outputData.output += tplFns.closeMenu(closingDistance + 1);
-    process.stdout.write(outputData.output);
+    let output = tree.processData(buildDomString);
+    console.log(output);
+    process.stdout.write(output);
 
 }
 
