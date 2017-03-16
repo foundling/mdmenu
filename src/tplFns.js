@@ -1,26 +1,23 @@
 function templateFunctions({ listType }) {
 
-    if (!listType) throw new Error('A valid HTML list tag is a required parameter.'); 
-
     const _tplFns = {
 
         buildChild: function(title, headingSize, distance, currentIndent) {
             const indent = '\t'.repeat(currentIndent);
 
             return `
-${indent}<${ listType }>
-${indent}    <li>
-${indent}        <h${ headingSize }> ${ title } </h${ headingSize }>`;
+                ${indent}<${ listType }>
+                ${indent}    <li>
+                ${indent}        <h${ headingSize }> ${ title } </h${ headingSize }>`;
 
         },
 
         buildSibling: function (title, headingSize, distance, indent) {
 
             return `
-${indent}</li>
-${indent}<li>
-${indent}   <h${ headingSize }>${ title }</h${ headingSize }>
-            `;
+                ${indent}</li>
+                ${indent}<li>
+                ${indent}   <h${ headingSize }>${ title }</h${ headingSize }>`;
 
         },
 
@@ -49,9 +46,9 @@ ${indent}   <h${ headingSize }>${ title }</h${ headingSize }>
             while (distance > 0) {
                 
                 let tpl = `
-</li>
-    </${listType}>
-                `;
+                </li>
+                    </${listType}>
+                                `;
 
                 closingOutput.push(tpl);
                 --distance;    

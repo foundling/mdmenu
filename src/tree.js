@@ -1,4 +1,4 @@
-const Tree = function(data) {
+const Tree = function({ data }) {
 
     let _tree = _mkNode({ 
 
@@ -8,6 +8,8 @@ const Tree = function(data) {
         children: [] 
 
     });
+
+    let state = null;
 
 
     function _findAncestor(node, distance) {
@@ -60,12 +62,14 @@ const Tree = function(data) {
                 let newNode = _mkNode({ data: data[cur], parent: currentNode, direction: diff });
                 parentNode.children.push(newNode);
             }
+
             // add sibling
             if (diff === 0) {
                 let parentNode = _findAncestor(currentNode, diff);
                 let newNode = _mkNode({ data: data[cur], parent: parentNode, direction: diff });
                 parentNode.children.push(newNode);
             }
+
             // append to ancestor's children 
             if (diff < 0) {
                 let parentNode = _findAncestor(currentNode, Math.abs(diff + 1));
@@ -76,20 +80,18 @@ const Tree = function(data) {
 
     }
 
-    function _bfs(node, count, callback) {
+    function _bfs(node, callback) {
 
         for (let i = 0, max = node.children.length; i < max; ++i) {
 
             let childNode = node.children[i];
+            let { tag, title } = childNode.data;
             let direction = childNode.direction;
-            let {tag, title} = childNode.data;
-            let callbackData = {
-                tag,
-                title,
-                direction
-            };
-            callback(callbackData);
-            _bfs(node.children[i], count, callback);
+
+            let callbackData = { tag, title, direction };
+
+            state = callback(callbackData);
+            _bfs(childNode, callback);
 
         } 
 
@@ -97,8 +99,8 @@ const Tree = function(data) {
 
     function processData(callback) {
 
-        const root = _tree;
-        const processData = _bfs(root, 0, callback);
+        _bfs(_tree, callback);
+        return state;
 
     }
 

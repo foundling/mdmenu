@@ -1,99 +1,46 @@
-/* mdmenu builds an HTML menu from a markdown file. */
-
-// conforms to the HTML5 spec: https://www.w3.org/wiki/HTML_lists#Nesting_lists
+// mdmenu builds an HTML menu from a markdown file.
+// https://www.w3.org/wiki/HTML_lists#Nesting_lists
 
 const fs = require('fs');
-const mdfile = fs.readFileSync('./test/document.md', 'utf8');
-const Tree = require('./lib/tree');
+const Tree = require('./src/tree');
+const DomStringBuilder = require('./src/domStringBuilder');
+const mdContent = fs.readFileSync('./test/document.md', 'utf8');
 
-const {
+const { 
 
-    matchesLongest,
-    tagToTitle,
-    isLengthy,
-    toTrimmed
+    parseHeadings, 
+    tagToTitle 
 
-} = require('./lib/util');
+} = require('./src/util');
 
-const {
+const options = {
 
-    buildChild,
-    buildSibling,
-    buildAncestor,
-    closeMenu
+    indentChar: '\t',
+    listType: 'ul'
 
-} = require('./lib/templateFunctions').init({
-
-    listType: process.argv[2] || 'ul'  
-
-});
-
-const headings = [
-    '######',
-    '#####',
-    '####',
-    '###',
-    '##',
-    '#'
-];
-
-const headingLines = mdfile
-    .split('\n')
-    .filter(isLengthy)
-    .map(toTrimmed)
-    .filter(matchesLongest(headings));
-
-const data = headingLines.map(tagToTitle);
-const tree = new Tree(data);
-
-const tagsSeen = [];
-let output = '';
-let lastTag; 
-let currentIndent = 0;
-
-const domStringBuilder = function({ indentChar }) {
-
-
-    return function buildDomString({ tag, title, direction, options }) {
-
-        const tagLength = tag.length;
-
-        // child
-        if (direction > 0) {
-
-            output += buildChild(title, tagLength, direction, currentIndent);  
-            ++currentIndent;
-
-        }
-
-        // sibling
-        if (direction === 0) {
-         
-            output += buildSibling(title, tagLength, direction, currentIndent);       
-        }
-
-        // ancestor
-        if (direction < 0 ) {
-
-            output += buildAncestor(title, tagLength, direction, currentIndent);
-            currentIndent = currentIndent - direction;
-                
-        }
-
-        output += indentChar.repeat(currentIndent); 
-
-        tagsSeen.push(tag);
-        lastTag = tag;
-
-    };
 };
 
-tree.buildTree();
-tree.processData( domStringBuilder({ indentChar: '\t' }) );
+const tplFns = require('./src/tplFns').init({ 
+    listType: process.argv[2] || options.listType 
+});
 
-const shortestTagSeen = Math.min(...tagsSeen.map(tag => tag.length));
-const lastTagLength = lastTag.length;
-const closingDistance = lastTag.length - shortestTagSeen;
+function main() {
 
-output += closeMenu(closingDistance + 1);
-process.stdout.write(output);
+    const headingLines = parseHeadings(mdContent);
+    const tree = Tree({ data: headingLines.map(tagToTitle) });
+    const domStringBuilder = DomStringBuilder({ indentChar: options.indentChar, tplFns });
+
+    tree.buildTree();
+
+    let outputData = tree.processData(domStringBuilder);
+
+    const shortestTagSeen = Math.min(...outputData.tagsSeen.map(tag => tag.length));
+    const lastTagLength = outputData.lastTag.length;
+    const closingDistance = outputData.lastTag.length - shortestTagSeen;
+
+    outputData.output += tplFns.closeMenu(closingDistance + 1);
+    process.stdout.write(outputData.output);
+
+}
+
+main();

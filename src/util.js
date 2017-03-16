@@ -1,5 +1,18 @@
 /* Predicates and Transformations */
 
+
+
+const headings = [
+
+    '######',
+    '#####',
+    '####',
+    '###',
+    '##',
+    '#'
+
+];
+
 const matchesLongest = (patterns) => (text) => {
 
     let rv = false;
@@ -30,8 +43,20 @@ const tagToTitle = (line) => {
 const isLengthy = (x) => x.length;
 const toTrimmed = s => s.trim();
 
+const parseHeadings = (mdContent) => {   
+
+    return mdContent
+        .split('\n')
+        .filter(isLengthy)
+        .map(toTrimmed)
+        .filter(matchesLongest(headings));
+
+};
+
 module.exports = exports = {
 
+    parseHeadings,
+    headings,
     matchesLongest,
     tagToTitle,
     toTrimmed,
