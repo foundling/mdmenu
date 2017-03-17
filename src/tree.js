@@ -10,6 +10,7 @@ const Tree = function({ data }) {
     });
 
     let output = null;
+    let nodesProcessed = 0;
 
     function _findAncestor(node, distance) {
 
@@ -81,18 +82,21 @@ const Tree = function({ data }) {
 
     }
 
-    function _bfs(node, callback) {
+    function _dfs(node, callback) {
 
         for (let i = 0, max = node.children.length; i < max; ++i) {
+
+            nodesProcessed += 1;
 
             let childNode = node.children[i];
             let { tag, title } = childNode.data;
             let direction = childNode.direction;
+            let done = nodesProcessed === data.length;
 
-            let callbackData = { tag, title, direction, done: i === max - 1 };
+            let callbackData = { tag, title, direction, done: done };
 
             output = callback(callbackData);
-            _bfs(childNode, callback);
+            _dfs(childNode, callback);
 
         } 
 
@@ -100,7 +104,7 @@ const Tree = function({ data }) {
 
     function processData(callback) {
 
-        _bfs(_tree, callback);
+        _dfs(_tree, callback);
         return output;
 
     }

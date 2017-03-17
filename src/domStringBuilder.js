@@ -44,11 +44,13 @@ function DomStringBuilder({ indentChar, listType }) {
         state.tagsSeen.push(tag);
         state.lastTag = tag;
 
+        // signal that we've processed all nodes
         if (done) {
 
             const shortestTagSeen = Math.min(...state.tagsSeen.map(tag => tag.length));
             const lastTagLength = state.lastTag.length;
             const closingDistance = state.lastTag.length - shortestTagSeen;
+
             state.output += closeMenu(closingDistance + 1);
 
         }

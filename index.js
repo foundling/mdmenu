@@ -23,8 +23,7 @@ function main() {
     tree.buildTree();
 
     let output = tree.processData(buildDomString);
-    console.log(output);
-    process.stdout.write(output);
+    process.stdout.write(output + '\n');
 
 }
 
