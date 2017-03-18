@@ -1,6 +1,7 @@
 /* Predicates and Transformations */
 
-
+const path = require('path');
+const fs = require('fs');
 
 const headings = [
 
@@ -51,7 +52,36 @@ const parseHeadings = (mdContent) => {
         .map(toTrimmed)
         .filter(matchesLongest(headings));
 
+
 };
+
+const validateArgs = (args) => {
+
+    const filepath = args.slice(2)[0];
+
+    if (!filepath) {
+        console.log('usage: mdmenu mdFile.md');
+        process.exit(1);
+    }
+
+    return normalizePath(filepath);
+
+};
+
+
+
+const normalizePath = function(filepath) {
+
+    const resolvedPath = path.resolve(path.join(__dirname, '../', filepath));
+
+    console.log(resolvedPath);
+    if (!fs.existsSync(resolvedPath)) {
+        throw new Error(`File doesn't exist: ${ resolvedPath }`); 
+    }
+
+    return resolvedPath;
+};
+
 
 module.exports = exports = {
 
@@ -60,6 +90,8 @@ module.exports = exports = {
     matchesLongest,
     tagToTitle,
     toTrimmed,
-    isLengthy
+    isLengthy,
+    normalizePath,
+    validateArgs
 
 };

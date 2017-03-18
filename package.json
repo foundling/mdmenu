@@ -12,18 +12,13 @@
   },
   "keywords": [
     "markdown",
-    "html",
-    "recursion",
-    "trees"
+    "html"
   ],
   "author": "Alex Ramsdell",
   "license": "MIT",
   "devDependencies": {
     "tap-prettify": "0.0.2",
     "tape": "^4.6.3"
-  },
-  "directories": {
-    "test": "test"
   },
   "dependencies": {
   }
